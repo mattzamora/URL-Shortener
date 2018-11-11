@@ -5,11 +5,13 @@
         "php": "^7.0.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "endroid/qr-code-bundle": "^3.3",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
+        "symfony/orm-pack": "^1.0",
         "symfony/twig-bundle": "*",
         "symfony/web-server-bundle": "*",
         "symfony/yaml": "*",
@@ -18,6 +20,7 @@
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",
         "symfony/dotenv": "*",
+        "symfony/maker-bundle": "^1.9",
         "symfony/profiler-pack": "^1.0"
     },
     "config": {

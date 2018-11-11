@@ -9,3 +9,7 @@
 index:
     path: /
     controller: 'App\Controller\ShortenerController::index'
+
+qrcode-test:
+    path: /qrcode-test
+    controller: 'App\Controller\ShortenerController::qr_code_test'
