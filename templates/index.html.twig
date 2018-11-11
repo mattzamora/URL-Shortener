@@ -1,15 +1,17 @@
 {# templates/index.html.twig #}
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}URL Shortener{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}
-			<h1>Inside template engine</h1>
-		{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
-</html>
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<div id="url-input" class="col-5">
+		<h1>Please enter your URL</h1>
+		
+		<div class="input-group">
+		  <input type="text" class="form-control" aria-label="Input url to shorten">
+		  <div class="input-group-append">
+			<button type="button" class="btn">Action</button>
+		  </div>
+		</div>
+	</div>
+	
+{% endblock %}

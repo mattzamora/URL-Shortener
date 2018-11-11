@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/apache-pack": "^1.0",
+        "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
@@ -16,7 +17,8 @@
     },
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",
-        "symfony/dotenv": "*"
+        "symfony/dotenv": "*",
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {
