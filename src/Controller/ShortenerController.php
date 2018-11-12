@@ -38,7 +38,7 @@ class ShortenerController extends AbstractController
 	   if ($long_url_host == $request->getHttpHost()){
 		   $possible_slug = parse_url($longurl_input, PHP_URL_PATH);
 		   if (strlen($possible_slug)>1){
-			    $possible_slug = substr($str, 1);  // remove the slash from /path in a https://host.com/path
+			    $possible_slug = substr($possible_slug, 1);  // remove the slash from /path in a https://host.com/path
 				
 				$existing_url = $repository->findOneBy(['short_stub' => $possible_slug]);
 				
