@@ -34,9 +34,9 @@ class ShortenerController extends AbstractController
 	   
 	   
 	   //Check for an already existing short URL matching the input URL
-	   $long_url_host = $parse_url($longurl_input, PHP_URL_HOST);
+	   $long_url_host = parse_url($longurl_input, PHP_URL_HOST);
 	   if ($long_url_host == $request->getHttpHost()){
-		   $possible_slug=$parse_url($longurl_input, PHP_URL_PATH);
+		   $possible_slug = parse_url($longurl_input, PHP_URL_PATH);
 		   if (strlen($possible_slug)>1){
 			    $possible_slug = substr($str, 1);  // remove the slash from /path in a https://host.com/path
 				
