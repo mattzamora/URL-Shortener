@@ -13,3 +13,7 @@ index:
 qrcode-test:
     path: /qrcode-test
     controller: 'App\Controller\ShortenerController::qr_code_test'
+    
+ajaxAction:
+    path: /ajaxAction
+    controller: 'App\Controller\ShortenerController::ajaxAction'

@@ -12,6 +12,14 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\Response\QrCodeResponse;
 
+use Symfony\Component\HttpFoundation\Request;
+
+//Print in the Url object with works with the database
+use App\Entity\Url;
+use Doctrine\ORM\EntityManagerInterface;
+use DateTime;
+
+
 class ShortenerController extends AbstractController
 {
     public function index()
@@ -21,33 +29,88 @@ class ShortenerController extends AbstractController
         //return new Response('<!DOCTYPE html><html><body><h1>Symfony is working!</h1></body></html>');
     }
 	
-	public function qr_code_test()
+	public function ajaxAction(Request $request, EntityManagerInterface $entityManager)
 	{
-		$qrCode = new QrCode('https://yahoo.com');
-		$qrCode->setSize(400);
+	   $longurl_input = $request->request->get('longurl');
+	   
+	   if(!$longurl_input){
+		   $reply_message="Failed to grab data";
+	   } 
+	   else {
+			$repository = $this->getDoctrine()->getRepository(Url::class);
+			
+			$unique_stub = False;
+			
+			//generate new stubs until one is unique
+			while(!$unique_stub){
+				$new_stub = generate_random_stub();
+				
+				// check that the new_stub is unique
+				$existing_url = $repository->findOneBy(['short_stub' => $new_stub]);
+				if (!$existing_url){
+					$unique_stub = True;
+				}
+			}
+			
+			$short_stub=$new_stub;
+			
+			//Declare the created_on date
+			//date_default_timezone_set('America/New_York');
+			//$date = date('m/d/Y h:i:s a', time());
+			
+			
+			//Create QR Code
+			$short_url =$request->getBaseUrl().$short_stub;
+			
+			$qrCode = new QrCode($short_url);
+			$qrCode->setSize(400);
 
-		// Set advanced options
-		$qrCode->setWriterByName('png');
-		$qrCode->setMargin(10);
-		$qrCode->setEncoding('UTF-8');
-		$qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
-		$qrCode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0, 'a' => 0]);
-		$qrCode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255, 'a' => 0]);
-		//$qrCode->setLabel('Scan the code', 16, __DIR__.'/../assets/fonts/noto_sans.otf', LabelAlignment::CENTER);
-		//$qrCode->setLogoPath(__DIR__.'/../assets/images/symfony.png');
-		//$qrCode->setLogoSize(150, 200);
-		$qrCode->setRoundBlockSize(true);
-		$qrCode->setValidateResult(false);
-		//$qrCode->setWriterOptions(['exclude_xml_declaration' => true]);
+			// Set advanced options
+			$qrCode->setWriterByName('png');
+			$qrCode->setMargin(10);
+			$qrCode->setEncoding('UTF-8');
+			$qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+			$qrCode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0, 'a' => 0]);
+			$qrCode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255, 'a' => 0]);
+			$qrCode->setRoundBlockSize(true);
+			$qrCode->setValidateResult(false);
 
-		// Directly output the QR code
-		header('Content-Type: '.$qrCode->getContentType());
-		echo $qrCode->writeString();
+			// Save QR Code image to a file
+			$qrcode_name = $short_stub.'.png';
+			$qr_code_address ="images/qrcodes/".$qrcode_name;
+			$qrCode->writeFile(__DIR__.'/../../public/'.$qr_code_address);
+			
+			//Create and save the Url object in the database
+			$url = new Url();
+			$url->setLongUrl($longurl_input);
+			$url->setShortStub($short_stub);
+			$url->setQrCodeAddress($qr_code_address);
+			$url->setRedirectCount(0);
+			$url->setCreatedOn(new DateTime());
+			$entityManager->persist($url);
 
-		// Save it to a file
-		$qrcode_name = 'qrcode.png';
-		$qrCode->writeFile(__DIR__.'/../../public/images/qrcodes/'.$qrcode_name);
-		
-		return new Response(__DIR__.'/../../public/images/qrcodes/');
+			// actually executes the queries (i.e. the INSERT query)
+			$entityManager->flush($url);
+			
+			$reply_message=$short_url;
+	   }
+	   
+	   
+	  
+	   
+	   return new Response( $reply_message );
 	}
+}
+
+function generate_random_stub(){
+	 $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	 $string = '';
+	 $random_string_length = rand(5,9);  # Set a stub length to be between 5 and 9 characters
+	 
+	 $max = strlen($characters) - 1;
+	 for ($i = 0; $i < $random_string_length; $i++) {
+		  $string .= $characters[mt_rand(0, $max)];
+	 }
+	 
+	 return $string;
 }
