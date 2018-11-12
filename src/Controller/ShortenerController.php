@@ -19,7 +19,6 @@ use App\Entity\Url;
 use Doctrine\ORM\EntityManagerInterface;
 use DateTime;
 
-
 class ShortenerController extends AbstractController
 {
     public function index()
@@ -97,6 +96,19 @@ class ShortenerController extends AbstractController
 	   }
 
 	   return new Response( $reply_message );
+	}
+	
+	public function do_redirect($slug,  EntityManagerInterface $entityManager){
+		$repository = $this->getDoctrine()->getRepository(Url::class);
+		$existing_url = $repository->findOneBy(['short_stub' => $slug]);
+		
+		if ($existing_url){
+			$long_url = 'https://enactpros.com';
+			return $this->redirect($long_url);
+		}
+		else{
+			 throw $this->createNotFoundException('This short URL does not exist');
+		}
 	}
 }
 

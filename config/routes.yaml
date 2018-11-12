@@ -17,3 +17,7 @@ qrcode-test:
 ajaxAction:
     path: /ajaxAction
     controller: 'App\Controller\ShortenerController::ajaxAction'
+    
+redirect:
+    path: /{slug}
+    controller: 'App\Controller\ShortenerController::do_redirect'
