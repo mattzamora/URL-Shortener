@@ -45,17 +45,26 @@ $(document).ready(function() {
 							var vanity_string=$("#vanity_url").val();
 							var slug = $("#slug").val();
 							
-							$.ajax({
-							url: "/ajaxAction/vanity", 
-							data: {
-								vanity:vanity_string,
-								slug_id:slug 
-								},
-							method: "POST",
-							success: function(result){
-									$("#vanity-wrapper").html(result);
-								}
-							});
+							var slug_regexp = /^[a-zA-Z0-9-_]+$/;
+							var slug_regex = new RegExp(slug_regexp);
+							if (vanity_string.match(slug_regex)){
+								$.ajax({
+								url: "/ajaxAction/vanity", 
+								data: {
+									vanity:vanity_string,
+									slug_id:slug 
+									},
+								method: "POST",
+								success: function(result){
+										$("#vanity-wrapper").html(result);
+									}
+								});	
+							}
+							else{
+								$("#vanity-notice").html('<div class="alert alert-danger" role="alert">Please enter a slug - only alphanumeric characters, dashes and underscores</div>');
+							}
+							
+							
 						});
 						
 					}
