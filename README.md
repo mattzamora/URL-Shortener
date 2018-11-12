@@ -30,6 +30,6 @@ long_url - varchar[2000]/string - not nullable <br>
 * Vanity URLs
 * QR Code
 * Analytics
-* If already shortened, returned the existing URL
+* If already shortened, return the existing URL
 
 Time to implement: ~8 hours, including Symfony learning curve
