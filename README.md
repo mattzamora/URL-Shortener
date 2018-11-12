@@ -13,6 +13,7 @@ composer install <br>
  php bin/console doctrine:migrations:migrate <br>
 4. Configure Apache or run via  <br>
 php bin/console server:run <br>
+5. Optionally, remove the WebProfilerBundle
 
 ## Database Schema
 Enity/Table: **Url** <br>
