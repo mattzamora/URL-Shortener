@@ -24,7 +24,6 @@ class ShortenerController extends AbstractController
 {
     public function index()
     {
-		//file_put_contents($savePath.$fileName, base64_decode($barcode));
 		return $this->render('index.html.twig');
         //return new Response('<!DOCTYPE html><html><body><h1>Symfony is working!</h1></body></html>');
     }
@@ -60,7 +59,9 @@ class ShortenerController extends AbstractController
 			
 			
 			//Create QR Code
-			$short_url =$request->getBaseUrl().$short_stub;
+			$baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+			$short_url = $baseurl.'/'.$short_stub;
+			$analytics_url = $baseurl.'/view/'.$short_stub;
 			
 			$qrCode = new QrCode($short_url);
 			$qrCode->setSize(400);
@@ -92,12 +93,9 @@ class ShortenerController extends AbstractController
 			// actually executes the queries (i.e. the INSERT query)
 			$entityManager->flush($url);
 			
-			$reply_message=$short_url;
+			$reply_message="Your short url is: "."<a href='".$short_url."'>".$short_url."</a><br>For more analtyics please view: <a href='".$analytics_url."'>".$analytics_url."</a>";
 	   }
-	   
-	   
-	  
-	   
+
 	   return new Response( $reply_message );
 	}
 }
