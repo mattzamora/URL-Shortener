@@ -1,0 +1,27 @@
+{# templates/view/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	
+	<div class="row">
+		<div class="col-5" id="details-view">
+			<div class="row">
+				<div class="col-12">
+					<h1>View Short URL Details:</h1>
+					<h3>{{short_url}}</h3>
+					<p>Long URL: {{long_url}}</p>
+					<p>Visit count: {{current_count}}</p>
+					<p>Vanity URL: {{vanity_url}}</p>
+					<p>QR Code. Click to download.</p>
+					<a href="{{asset(qr_code_address)}}" download>
+					  <img src="{{asset(qr_code_address)}}" alt="QR Code">
+					</a>
+					
+					<p>Created On:{{created_on}}</p>
+					<a href="{{base_url}}">Go Home</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

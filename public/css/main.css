@@ -1,7 +1,6 @@
 html, body {
 	padding: 0px;
 	margin: 0px;
-	overflow: hidden;
 }
 
 canvas {
@@ -15,13 +14,26 @@ canvas {
 	z-index: -99;
 }
 
-#url-input{
+#url-input, #details-view{
 	margin: auto;
 	text-align: center;
 	padding-top: 20%;
 	padding-bottom: 100px;
 	color: white;
 }
-#url-input h1{
+#url-input h1, #details-view h1, #details-view h3, p{
 	text-shadow: 1px 1px 1px #000000;
+}
+
+p a{
+	text-shadow: none;
+}
+
+#details-view{
+	padding-top: 0px;
+}
+
+body{
+	overflow-y: scroll;
+	overflow-x: hidden;
 }

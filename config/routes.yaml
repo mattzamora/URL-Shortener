@@ -21,3 +21,7 @@ ajaxAction:
 redirect:
     path: /{slug}
     controller: 'App\Controller\ShortenerController::do_redirect'
+    
+view:
+    path: /view/{slug}
+    controller: 'App\Controller\ShortenerController::view_details'

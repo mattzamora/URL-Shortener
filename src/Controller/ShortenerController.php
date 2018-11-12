@@ -92,7 +92,7 @@ class ShortenerController extends AbstractController
 			// actually executes the queries (i.e. the INSERT query)
 			$entityManager->flush($url);
 			
-			$reply_message="Your short url is: "."<a href='".$short_url."'>".$short_url."</a><br>For more analtyics please view: <a href='".$analytics_url."'>".$analytics_url."</a>";
+			$reply_message="<p>Your short url is: "."<a href='".$short_url."'>".$short_url."</a><br>For more analtyics please view: <a href='".$analytics_url."'>".$analytics_url."</a></p>";
 	   }
 
 	   return new Response( $reply_message );
@@ -103,12 +103,40 @@ class ShortenerController extends AbstractController
 		$existing_url = $repository->findOneBy(['short_stub' => $slug]);
 		
 		if ($existing_url){
-			$long_url = 'https://enactpros.com';
+			$long_url = $existing_url->getLongUrl();
+			$current_count = $existing_url->getRedirectCount();
+			$existing_url->setRedirectCount($current_count+1); //Increment view count
+			
+			$entityManager->persist($existing_url);
+			$entityManager->flush($existing_url);
+			
 			return $this->redirect($long_url);
 		}
 		else{
 			 throw $this->createNotFoundException('This short URL does not exist');
 		}
+	}
+	
+	public function view_details($slug, EntityManagerInterface $entityManager, Request $request){
+		$repository = $this->getDoctrine()->getRepository(Url::class);
+		$existing_url = $repository->findOneBy(['short_stub' => $slug]);
+		
+		$baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+		$short_url = $baseurl.'/'.$slug;
+		
+		$long_url = $existing_url->getLongUrl();
+		$current_count = $existing_url->getRedirectCount();
+		$vanity=$existing_url->getVanity();
+		if (!$vanity){
+			$vanity="None";
+		}
+		
+		$qr_code_address = $existing_url->getQrCodeAddress();
+		
+		$created_on = $existing_url->getCreatedOn()->format('Y-m-d H:i:s');
+		
+		return $this->render('view/index.html.twig', array('long_url' => $long_url, 'current_count' => $current_count, 'vanity_url' => $vanity, 'qr_code_address' => $qr_code_address, 'created_on' => $created_on, 'short_url' =>$short_url, 'base_url' => $baseurl ));
+		
 	}
 }
 
