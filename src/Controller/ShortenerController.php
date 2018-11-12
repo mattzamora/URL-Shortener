@@ -104,6 +104,12 @@ class ShortenerController extends AbstractController
 		$slug_id = $request->request->get('slug_id');
 		
 		$repository = $this->getDoctrine()->getRepository(Url::class);
+		$conflicting_url = $repository->findOneBy(['vanity' => $vanity_input]);
+		
+		if($conflicting_url){
+			return new Response("That vanity URL is take. Please start over.");
+		}
+		
 		$existing_url = $repository->findOneBy(['short_stub' => $slug_id]);
 		
 		if ($existing_url){
@@ -156,7 +162,7 @@ class ShortenerController extends AbstractController
 		
 		$long_url = $existing_url->getLongUrl();
 		$current_count = $existing_url->getRedirectCount();
-		$vanity=$existing_url->getVanity();
+		$vanity=$baseurl.'/'.$existing_url->getVanity();
 		if (!$vanity){
 			$vanity="None";
 		}
