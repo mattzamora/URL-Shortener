@@ -30,13 +30,34 @@ class ShortenerController extends AbstractController
 	public function ajaxAction(Request $request, EntityManagerInterface $entityManager)
 	{
 	   $longurl_input = $request->request->get('longurl');
+	   $repository = $this->getDoctrine()->getRepository(Url::class);
+	   
+	   
+	   //Check for an already existing short URL matching the input URL
+	   $long_url_host = $parse_url($longurl_input, PHP_URL_HOST);
+	   if ($long_url_host == $request->getHttpHost()){
+		   $possible_slug=$parse_url($longurl_input, PHP_URL_PATH);
+		   if (strlen($possible_slug)>1){
+			    $possible_slug = substr($str, 1);  // remove the slash from /path in a https://host.com/path
+				
+				$existing_url = $repository->findOneBy(['short_stub' => $possible_slug]);
+				
+				//If a matching slug is found, return that info, otherwise continue to generate a slug
+				if ($existing_url){
+					$short_stub = $possible_slug;
+					$baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+					$short_url = $baseurl.'/'.$short_stub;
+					$analytics_url = $baseurl.'/view/'.$short_stub;
+					return $this->render('confirmation-area.html.twig', array('short_url' =>$short_url, 'analytics_url' => $analytics_url, 'short_stub' => $short_stub ));
+				}
+		   }
+		   
+	   }
 	   
 	   if(!$longurl_input){
 		   $reply_message="Failed to grab data";
 	   } 
 	   else {
-			$repository = $this->getDoctrine()->getRepository(Url::class);
-			
 			$unique_stub = False;
 			
 			//generate new stubs until one is unique
