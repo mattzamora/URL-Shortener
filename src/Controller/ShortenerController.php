@@ -92,15 +92,45 @@ class ShortenerController extends AbstractController
 			// actually executes the queries (i.e. the INSERT query)
 			$entityManager->flush($url);
 			
-			$reply_message="<p>Your short url is: "."<a href='".$short_url."'>".$short_url."</a><br>For more analtyics please view: <a href='".$analytics_url."'>".$analytics_url."</a></p>";
+			return $this->render('confirmation-area.html.twig', array('short_url' =>$short_url, 'analytics_url' => $analytics_url, 'short_stub' => $short_stub ));
+	
 	   }
 
 	   return new Response( $reply_message );
 	}
 	
+	public function ajaxVanity(Request $request, EntityManagerInterface $entityManager){
+		$vanity_input = $request->request->get('vanity');
+		$slug_id = $request->request->get('slug_id');
+		
+		$repository = $this->getDoctrine()->getRepository(Url::class);
+		$existing_url = $repository->findOneBy(['short_stub' => $slug_id]);
+		
+		if ($existing_url){
+			//Update the Vanity URL
+			$existing_url->setVanity($vanity_input);	
+			$entityManager->persist($existing_url);
+			$entityManager->flush($existing_url);
+			
+			$baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+			$reply_message = "<p>New vanity url: ".$baseurl.'/'.$vanity_input."</p>";
+			return new Response($reply_message);
+		}
+		else{
+			 throw $this->createNotFoundException('This short URL does not exist');
+		}
+		
+	}
+	
+	
 	public function do_redirect($slug,  EntityManagerInterface $entityManager){
 		$repository = $this->getDoctrine()->getRepository(Url::class);
 		$existing_url = $repository->findOneBy(['short_stub' => $slug]);
+		
+		//Look for a vanity URL in not a short URL
+		if(!$existing_url){
+			$existing_url = $repository->findOneBy(['vanity' => $slug]);
+		}
 		
 		if ($existing_url){
 			$long_url = $existing_url->getLongUrl();

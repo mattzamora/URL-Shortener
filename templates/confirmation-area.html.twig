@@ -1,0 +1,12 @@
+
+<p>Your short url is: <a href='{{short_url}}'>{{short_url}}</a><br>
+For more analtyics please view: <a href='{{analytics_url}}'>{{analytics_url}}</a></p>
+<p>
+<div id="vanity-wrapper">
+	<a href="#" id="add-vanity-link">Click here to add a vanity url</a></p>
+	<div id="add-vanity-section" style="display:none;">
+		<input id="vanity_url" type="text" class="form-control" aria-label="Input url to shorten"  placeholder="A valid vanity has only alphanumerics, dash, or underscore">
+		<input type="hidden" name="slug" id="slug" value="{{short_stub}}">
+		<button id="send-vanity-url" type="button" class="btn">Submit</button>
+	</div>
+</div>

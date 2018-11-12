@@ -29,6 +29,35 @@ $(document).ready(function() {
 					method: "POST",
 					success: function(result){
 						$("#url-reply").html(result);
+						
+						//Add Vanity functionality
+						$("#add-vanity-link").click(function(event){
+							event.preventDefault();
+							$("#add-vanity-section").slideDown();
+							
+							//Prevent default click functionality
+							return false;
+						});
+						
+						//Update Vanity with AJAX
+						$("#send-vanity-url").click(function(){
+							
+							var vanity_string=$("#vanity_url").val();
+							var slug = $("#slug").val();
+							
+							$.ajax({
+							url: "/ajaxAction/vanity", 
+							data: {
+								vanity:vanity_string,
+								slug_id:slug 
+								},
+							method: "POST",
+							success: function(result){
+									$("#vanity-wrapper").html(result);
+								}
+							});
+						});
+						
 					}
 				});
 			}
@@ -41,6 +70,7 @@ $(document).ready(function() {
 
 		
 	});
+
 });
 
 

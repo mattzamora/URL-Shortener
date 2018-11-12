@@ -18,6 +18,10 @@ ajaxAction:
     path: /ajaxAction
     controller: 'App\Controller\ShortenerController::ajaxAction'
     
+ajaxVanity:
+    path: /ajaxAction/vanity
+    controller: 'App\Controller\ShortenerController::ajaxVanity'
+    
 redirect:
     path: /{slug}
     controller: 'App\Controller\ShortenerController::do_redirect'
